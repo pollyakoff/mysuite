@@ -1,2 +1,0 @@
-# mysuite
-duppi_suite
