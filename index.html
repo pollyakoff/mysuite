@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>duppi.xd — Poliakov Danila</title>
+  <!--
+  ════════════════════════════════════════════════
+  ШРИФТЫ — КАК ПОДКЛЮЧИТЬ СВОИ:
+
+  1. Создай папку "fonts" рядом с index.html
+  2. Положи туда файлы шрифтов (.woff2 или .ttf):
+       fonts/DisplayFont-Bold.woff2
+       fonts/DisplayFont-Regular.woff2
+       fonts/BodyFont-Regular.woff2
+       fonts/BodyFont-Medium.woff2
+  3. Измени названия в @font-face блоках ниже:
+       src: url('fonts/ТВО_НАЗВАНИЕ.woff2')
+       font-family: 'MyDisplay' — можешь назвать как угодно
+  4. Замени переменные в :root:
+       --font-display: 'MyDisplay', sans-serif;
+       --font-body:    'MyBody', sans-serif;
+  ════════════════════════════════════════════════
+  -->
+  <style>
+    /* ─── ЛОКАЛЬНЫЕ ШРИФТЫ ─── */
+    /* ДИСПЛЕЙНЫЙ (заголовки, имя, nav-logo) */
+    @font-face {
+      font-family: 'SiteDisplay';
+      src: url('fonts/bebasneuecyrillic.ttf') format('truetype'),
+           url('fonts/bebasneuecyrillic.ttf')   format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'SiteDisplay';
+      src: url('fonts/bebasneuecyrillic.ttf') format('truetype'),
+           url('fonts/bebasneuecyrillic.ttf')   format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    /* ОСНОВНОЙ (параграфы, теги, мелкий текст) */
+    @font-face {
+      font-family: 'SiteBody';
+      src: url('JetBrainsMono-VariableFont_wght.ttf') format('truetype'),
+           url('JetBrainsMono-VariableFont_wght.ttf')   format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'SiteBody';
+      src: url('JetBrainsMono-VariableFont_wght.ttf') format('truetype'),
+           url('JetBrainsMono-VariableFont_wght.ttf')   format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+
+  <style>
+    /* ─── TOKENS ─── */
+    :root {
+      --bg:      #0d1117;
+      --ink: #F0F4FF;        /* мятно-зелёный вместо лаймового */
+--muted: rgba(184, 232, 208, 0.45);
+      --accent:  #599DD9;
+      --muted:   #ffffff;
+      --border:  #ffffff;
+      --card-bg: #081226;
+      --font-display: 'SiteDisplay', 'Space Grotesk', sans-serif;
+      --font-body:    'SiteBody', 'Inter', sans-serif;
+    }
+
+    /* ─── RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    /* ─── KEYFRAMES для анимации фона ─── */
+@keyframes bgShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body {
+  background: linear-gradient(
+    135deg,
+    #0d1117,
+    #0b1a2e,
+    #0f1c1e,
+    #0b1a2e,
+    #0d1117
+  );
+  background-size: 300% 300%;
+  animation: bgShift 16s ease infinite;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+    /* ─── NAV ─── */
+    nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2.5rem;
+  background: rgba(10, 14, 20, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(235, 242, 182, 0.08);
+}
+   .nav-logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  cursor: default;
+  user-select: none;
+}
+
+.logo-char {
+  display: inline-block;
+  color: #F0F4FF;
+  animation: logoFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.logo-accent {
+  display: inline-block;
+  color: #A8CFFF;
+  animation: logoFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.30s;
+}
+
+/* ── появление по очереди при загрузке ── */
+.logo-char:nth-child(1) { animation-delay: 0.05s; }
+.logo-char:nth-child(2) { animation-delay: 0.10s; }
+.logo-char:nth-child(3) { animation-delay: 0.15s; }
+.logo-char:nth-child(4) { animation-delay: 0.20s; }
+.logo-char:nth-child(5) { animation-delay: 0.25s; }
+.logo-char:nth-child(7) { animation-delay: 0.35s; }
+.logo-char:nth-child(8) { animation-delay: 0.40s; }
+
+@keyframes logoFadeIn {
+  0%   { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ── точка мигает каждые 3 секунды ── */
+.logo-accent {
+  animation: logoFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both,
+             logoBlink 3s ease-in-out infinite;
+  animation-delay: 0.30s, 1.5s;
+}
+
+@keyframes logoBlink {
+  0%, 75%, 100% { opacity: 1;   }
+  85%           { opacity: 0.1; }
+}
+
+/* ── волна при наведении ── */
+.nav-logo:hover .logo-char {
+  animation: logoWave 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.nav-logo:hover .logo-char:nth-child(1) { animation-delay: 0.00s; }
+.nav-logo:hover .logo-char:nth-child(2) { animation-delay: 0.05s; }
+.nav-logo:hover .logo-char:nth-child(3) { animation-delay: 0.10s; }
+.nav-logo:hover .logo-char:nth-child(4) { animation-delay: 0.15s; }
+.nav-logo:hover .logo-char:nth-child(5) { animation-delay: 0.20s; }
+.nav-logo:hover .logo-char:nth-child(7) { animation-delay: 0.25s; }
+.nav-logo:hover .logo-char:nth-child(8) { animation-delay: 0.30s; }
+
+@keyframes logoWave {
+  0%   { transform: translateY(0); }
+  40%  { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+    .nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.nav-links a {
+  color: var(--ink);          /* ← явный цвет на тег <a> */
+  text-decoration: none;
+  opacity: 0.6;               /* приглушённый по умолчанию */
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #ffffff;             /* белый при наведении */
+  opacity: 1;
+}
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      padding: 8rem 2.5rem 5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-name {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 12vw, 10rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  margin-bottom: 1.5rem;
+}
+
+.name-char,
+.name-accent {
+  display: inline-block;
+  color: var(--ink);
+  animation: heroNameFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── буквы появляются по очереди ── */
+.name-char:nth-child(1) { animation-delay: 0.1s; }
+.name-char:nth-child(2) { animation-delay: 0.15s; }
+.name-char:nth-child(3) { animation-delay: 0.2s; }
+.name-char:nth-child(4) { animation-delay: 0.25s; }
+.name-char:nth-child(5) { animation-delay: 0.3s; }
+.name-accent            { animation-delay: 0.35s; color: var(--accent); font-size: 0.85em; }
+.name-char:nth-child(7) { animation-delay: 0.4s; }
+.name-char:nth-child(8) { animation-delay: 0.45s; }
+
+@keyframes heroNameFadeIn {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ── точка мигает ── */
+.name-accent {
+  animation: heroNameFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both,
+             heroNameDot 3.5s ease-in-out infinite;
+  animation-delay: 0.35s, 1.8s;
+}
+
+@keyframes heroNameDot {
+  0%, 70%, 100% { opacity: 1;   }
+  80%           { opacity: 0.15; }
+}
+
+/* ── адаптив ── */
+@media (max-width: 900px) {
+  .hero-name {
+    font-size: clamp(2.5rem, 10vw, 6rem);
+  }
+}
+    /* ─── HERO CANVAS (JPEG sequence) ─── */
+    .hero-canvas-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .hero-canvas-wrap canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Loading bar */
+    .seq-loader {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: rgba(0,0,0,0.08);
+      z-index: 5;
+    }
+    .seq-loader-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+    /* overlay убран — луп без затенения */
+    /* Push text above canvas */
+    .hero > *:not(.hero-canvas-wrap) { position: relative; z-index: 2; }
+
+    /* ─── SHOWREEL ─── */
+    .reel-section {
+      padding: 0 2.5rem 7rem;
+    }
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* VIDEO EMBED — REPLACE src with your Vimeo / Kolodoscope link */
+    /*
+      HOW TO EMBED A VIDEO:
+      1. Vimeo: go to your video → Share → Embed → copy the iframe src
+         Example src: https://player.vimeo.com/video/YOUR_VIDEO_ID?autoplay=1&loop=1&muted=1
+      2. YouTube: share → embed → copy src (add ?autoplay=1&mute=1)
+      3. Replace the placeholder below with that <iframe> src
+    */
+    .reel-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background: #1a1a1a;
+      cursor: pointer;
+    }
+    .reel-wrapper iframe,
+    .reel-wrapper video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    /* Placeholder shown before embed is added */
+    .reel-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #181818;
+      color: #f7f7f7;
+      gap: 1rem;
+    }
+    .reel-placeholder .play-btn {
+      width: 5rem; height: 5rem;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s;
+    }
+    .reel-placeholder .play-btn svg { margin-left: 4px; }
+    .reel-placeholder:hover .play-btn { transform: scale(1.08); }
+    .reel-placeholder p {
+      font-size: 0.8rem;
+      font-family: var(--font-display);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section {
+      padding: 7rem 2.5rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .about-photo {
+      position: relative;
+      display: flex;
+      justify-content: flex-start;
+    }
+    /* Рамка-контейнер — фото и подпись теперь одна стеклянная карточка,
+       как в .work-card */
+    .about-photo-frame {
+      position: relative;
+      width: 70%;           /* при желании увеличь/уменьши размер фото */
+      aspect-ratio: 4/5;
+      border-radius: 2rem;  /* большое закругление */
+      overflow: hidden;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    /*
+      КАК ВСТАВИТЬ СВОЁ ФОТО:
+      Положи файл рядом с index.html (например photo.jpg)
+      и замени src="photo.jpg" ниже в HTML на своё имя файла.
+    */
+    .about-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      src="photo.jpg"
+    }
+    /* Подпись — стеклянная плашка, слитая с нижним краем фото */
+    .about-tag {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 2;
+      padding: 1.2rem 1.5rem 1.4rem;
+      background: rgba(6, 9, 16, 0.55);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;P
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      white-space: nowrap;P
+    }
+    .about-text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);F
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;P
+    }
+    .about-text p {
+      color: #ffffff;
+      font-size: 1rem;
+      line-height: 1.75;
+      margin-bottom: 1.2rem;
+      max-width: 36ch;
+    }
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+    .skill-tag {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.3rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-tag:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* ─── WORKS 2×2 ─── */
+    .works-section {
+      padding: 5rem 2.5rem 6rem;
+      border-top: 1px solid var(--border);
+    }
+    .works-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 2.5rem;
+    }
+    .works-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    /* Карточка — стекло на тёмном фоне */
+    .work-card {
+      position: relative;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px) saturate(140%);
+      -webkit-backdrop-filter: blur(22px) saturate(140%);
+      box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: box-shadow 0.35s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.35s cubic-bezier(0.16,1,0.3,1),
+                  border-color 0.35s ease;
+      cursor: pointer;
+    }
+    .work-card:hover {
+      border-color: rgba(255, 255, 255, 0.28);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transform: translateY(-6px);
+    }
+
+    /* Квадратная превью-зона → 16:9 как шоурил */
+    .work-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #05070c;
+    }
+    .work-thumb iframe,
+    .work-thumb video,
+    .work-thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: none;
+    }
+    /* Мягкий градиент снизу превью — плавный переход к стеклянной панели */
+    .work-thumb::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 45%;
+      background: linear-gradient(to top, rgba(5, 7, 12, 0.55), rgba(5, 7, 12, 0));
+      pointer-events: none;
+    }
+
+    /* Бейдж с типом работы поверх превью */
+    .work-type {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 3;
+      padding: 0.42rem 0.95rem;
+      border-radius: 999px;
+      background: rgba(8, 12, 22, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    /* Текстовый блок под превью — тоже стекло, чуть темнее */
+    .work-meta {
+      position: relative;
+      padding: 1.5rem 1.6rem 1.7rem;
+      background: rgba(6, 9, 16, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    /* Строка: текст слева, кнопка справа */
+    .work-meta-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+    .work-meta-text {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .work-meta h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      color: var(--ink);
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+    }
+    .work-meta p {
+      font-size: 0.85rem;
+      color: rgba(240, 244, 255, 0.6);
+      line-height: 1.55;
+    }
+
+    /* Кнопка со стрелкой → PDF, тоже стеклянная */
+    .work-pdf-btn {
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+      width: 2.6rem; height: 2.6rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      transition: background 0.2s, color 0.2s, transform 0.2s, border-color 0.2s;
+      text-decoration: none;
+    }
+    .work-pdf-btn:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--bg);
+      transform: scale(1.08);
+    }
+
+    /* ─── КНОПКА "СМОТРЕТЬ КЕЙСЫ" ─── */
+    .cases-btn-wrap {
+      margin-top: 3rem;
+      display: flex;
+      justify-content: center;
+    }
+    .cases-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--bg);
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      transition: background 0.22s, color 0.22s, transform 0.22s;
+      border: 1.5px solid var(--ink);
+    }
+    .cases-btn:hover {
+      background: var(--bg);
+      color: var(--ink);
+      transform: scale(1.03);
+    }
+    .cases-btn-arrow {
+      width: 2.2rem; height: 2.2rem;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.22s;
+      flex-shrink: 0;
+    }
+    .cases-btn:hover .cases-btn-arrow {
+      background: var(--border);
+    }
+
+    /* Responsive works */
+    @media (max-width: 640px) {
+      .works-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── CONTACT / FOOTER ─── */
+    footer {
+      padding: 7rem 2.5rem 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .contact-big {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 7vw, 6rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 3rem;
+    }
+    .contact-big em {
+      font-style: normal;
+      color: var(--muted);
+    }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .contact-links {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .btn:hover { background: var(--ink); color: var(--bg); }
+    .btn.accent { 
+  background: transparent; 
+  border-color: #ffffff; 
+  color: #ffffff; 
+}
+.btn.accent:hover { 
+  background: #ffffff; 
+  color: #0d1117;
+  border-color: #ffffff;
+}
+
+    .btn.accent:hover { background: var(--muted); color:s var(--bg); }
+
+    .footer-bottom {
+      margin-top: 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .btn-tg {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .btn-tg svg { flex-shrink: 0; }
+      height: 2rem;       /* высота логотипа — меняй под свой */
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .footer-logo-fallback {
+      display: none;      /* показывается если logo.png не найден */
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 2.5rem;
+    }
+
+    /* ─── REDUCED MOTION ─── */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-badge { animation: none; }
+      .work-card:hover .work-thumb { transform: none; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .hero-badge { display: none; }
+      .reel-section { padding: 0 1.5rem 5rem; }
+      .about-section {
+        grid-template-columns: 1fr;
+        padding: 4rem 1.5rem;
+      }
+      .about-photo-frame { width: 100%; max-width: 18rem; }
+      .works-section { padding: 4rem 1.5rem; }
+      .works-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .work-card:nth-child(n) { grid-column: span 1; }
+      .work-card:nth-child(1) { grid-column: span 2; }
+      footer { padding: 4rem 1.5rem 3rem; }
+      .contact-row { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 540px) {
+      .nav-links { display: none; }
+      .works-grid { grid-template-columns: 1fr; }
+      .work-card:nth-child(n) { grid-column: span 1; }
+    }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav>
+    <div class="nav-logo" aria-label="duppi.xd">
+  <span class="logo-char">d</span><span class="logo-char">u</span><span class="logo-char">p</span><span class="logo-char">p</span><span class="logo-char">i</span><span class="logo-accent">.</span><span class="logo-char">x</span><span class="logo-char">d</span>
+</div>
+
+    <ul class="nav-links">
+      <li><a href="#reel">Reel</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#works">Works</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+
+    <!--
+    ════════════════════════════════════════════════
+    JPEG SEQUENCE — КАК ПОДКЛЮЧИТЬ СВОИ КАДРЫ:
+
+    1. Назови файлы единообразно:
+         frame_001.jpg, frame_002.jpg, ... frame_120.jpg
+       (число цифр должно быть одинаковым, например 3)
+
+    2. Положи их рядом с index.html в папку:
+         sequence/frame_001.jpg
+         sequence/frame_002.jpg
+         ...
+
+    3. В скрипте ниже измени три переменные:
+         SEQ_FOLDER  — папка, например 'sequence'
+         SEQ_PREFIX  — префикс имени файла, например 'frame_'
+         SEQ_DIGITS  — сколько цифр (3 → 001, 4 → 0001)
+         SEQ_EXT     — расширение: 'jpg' или 'png'
+         SEQ_TOTAL   — сколько кадров всего
+         SEQ_FPS     — скорость воспроизведения (24 = кино, 30 = плавно)
+
+    4. Сохрани файл. Открой сайт — луп запустится автоматически.
+
+    Совет по оптимизации:
+       • Экспортируй кадры из C4D/Blender в разрешении 1920×1080
+       • Сожми JPEG на 70–80% качества (достаточно для экрана)
+       • ~60–120 кадров = 2–5 сек плавного лупа
+       • Для мощных машин можно 2–3× разрешение (2K/retina)
+    ════════════════════════════════════════════════
+    -->
+    <div class="hero-canvas-wrap" id="heroCanvasWrap">
+      <canvas id="heroCanvas"></canvas>
+      <div class="seq-loader"><div class="seq-loader-bar" id="seqLoaderBar"></div></div>
+    </div>
+
+    <h1 class="hero-name">
+  <span class="name-char">d</span>
+  <span class="name-char">u</span>
+  <span class="name-char">p</span>
+  <span class="name-char">p</span>
+  <span class="name-char">i</span>
+  <span class="name-accent">.</span>
+  <span class="name-char">x</span>
+  <span class="name-char">d</span>
+</h1>
+    <p class="hero-sub">Поляков Данила — создаю визуал который работает</p>
+    .hero-sub {
+  font-size: 1rem;
+  color: rgba(240, 244, 255, 0.65);
+  letter-spacing: 0.04em;
+  text-align: left;       /* ← left / center / right */
+  margin-bottom: 0;
+}
+
+  </section>
+
+  <!-- ─── SHOWREEL ─── -->
+  <section class="reel-section" id="reel">
+    <div class="section-label">Showreel</div>
+
+    <div class="reel-wrapper">
+      <!--
+        ══════════════════════════════════════════
+        HOW TO EMBED YOUR SHOWREEL:
+
+        Option A — Vimeo (recommended):
+          1. Open your Vimeo video
+          2. Click Share → Embed
+          3. Copy the src URL (looks like: https://player.vimeo.com/video/1234567890)
+          4. Replace the comment below with:
+             <iframe src="https://player.vimeo.com/video/YOUR_ID?autoplay=1&loop=1&muted=1&background=1"
+               allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+        Option B — YouTube:
+          <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&mute=1&loop=1&playlist=YOUR_VIDEO_ID"
+            allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+        Option C — Kolodoscope / direct file:
+          <video src="showreel.mp4" autoplay muted loop playsinline></video>
+
+        Remove the .reel-placeholder div once you've added the real embed.
+        ══════════════════════════════════════════
+      -->
+      <iframe src="https://kinescope.io/tqwq79mQeuEoDLyyDWNUkz"
+        allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <!-- ─── ABOUT ─── -->
+  <section class="about-section reveal" id="about">
+    <div class="about-photo">
+      <div class="about-photo-frame">
+        <!--
+          КАК ВСТАВИТЬ СВОЁ ФОТО:
+          1. Положи файл .jpg рядом с index.html (например photo.jpg)
+          2. Замени src="photo.jpg" ниже на имя своего файла
+        -->
+        <img class="about-img" src="photo.jpg" alt="Poliakov Danila" />
+        <div class="about-tag">Поляков Данила</div>
+      </div>
+    </div>
+
+    <div class="about-text">
+      <h2>3D/2D motion <br>  <br>  <br> </h2>
+      <p>
+        Motion Designer с 3,5 годами опыта на фрилансе.
+
+Начинал с музыкальных клипов и VFX — вырос до полного цикла 
+3D-продакшена и интеграции AI в рабочий процесс.
+Сегодня специализируюсь на рекламных креативах для брендов
+      </p>
+      <p>
+        Открыт для сотрудничества на проектную занятость
+      </p>
+
+      <!-- SKILLS -->
+      <div class="skills-list">
+        <span class="skill-tag">Blender</span>
+        <span class="skill-tag">Houdini</span>
+        <span class="skill-tag">After Effects</span>
+        <span class="skill-tag">AI-инструменты</span>
+        <span class="skill-tag">AR/VFX Compositing</span>
+        <span class="skill-tag">Photoshop,Figma</span>
+      </div>
+    </div>
+  </section>
+        
+
+  <!-- ─── WORKS ─── -->
+  <section class="works-section reveal" id="works">
+    <h2 class="works-title">Selected works</h2>
+
+    <div class="works-grid">
+
+      <!--
+      ════════════════════════════════════════
+      КАК ДОБАВИТЬ ВИДЕО В КАРТОЧКУ:
+
+      Вариант A — Vimeo (рекомендую):
+        Замени содержимое .work-thumb на:
+        <iframe src="https://player.vimeo.com/video/ВАШ_ID?autoplay=0&loop=1&muted=1"
+          allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+      Вариант B — Kinescope / другой плеер:
+        <iframe src="ССЫЛКА_НА_ПЛЕЕР" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+      Вариант C — картинка-превью + ссылка:
+        <a href="ССЫЛКА_НА_ВИДЕО" target="_blank">
+          <img src="preview-1.jpg" alt="Название" />
+        </a>
+
+      Поменяй текст в <h3> и <p> на своё название и описание.
+      ════════════════════════════════════════
+      -->
+
+      <!-- КАРТОЧКА 1 -->
+      <article class="work-card">
+        <!-- ВИДЕО: замени src на свою ссылку Kinescope/Vimeo/YouTube -->
+        <!-- Kinescope: src="https://kinescope.io/ВАШ_ID" -->
+        <!-- Vimeo:     src="https://player.vimeo.com/video/ВАШ_ID" -->
+        <div class="work-thumb">
+          <iframe src="https://kinescope.io/akP6kyuf2EoFJa9CPzy2Sr"
+            allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+        <span class="work-type">3D · Motion</span>
+        <div class="work-meta">
+          <div class="work-meta-inner">
+            <div class="work-meta-text">
+              <h3>OZON Фармацевтика</h3>
+              <p>Создание графики для рекламной интеграции в сотрудничестве с METAMEDIA GROUP</p>
+            </div>
+            <!-- PDF кнопка: замени # на ссылку Google Drive с разбором кейса -->
+            
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 2 -->
+      <article class="work-card">
+        <div class="work-thumb">
+          <iframe src="https://kinescope.io/edWFwmSST8NZGPfAXgGeWU"
+            allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+        <span class="work-type">3D · Motion</span>
+        <div class="work-meta">
+          <div class="work-meta-inner">
+            <div class="work-meta-text">
+              <h3>MEDIA BASKET</h3>
+              <p>SPEC-проект, анимация для IG. Повторил в точности брендовый мяч, определённые кадры были созданы с помощью AI</p>
+            </div>
+            <a class="work-pdf-btn" href="#" target="_blank" rel="noopener" title="Разбор кейса">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M3 9h12M9 3l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 3 -->
+      <article class="work-card">
+        <div class="work-thumb">
+          <iframe src="https://kinescope.io/4rwE1Wjiwy3koFwh4ZEPoA"
+            allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+        <span class="work-type">FULL · CGI</span>
+        <div class="work-meta">
+          <div class="work-meta-inner">
+            <div class="work-meta-text">
+              <h3>Интеграция в клип</h3>
+              <p>Динамичная анимация для музыкального клипа. На реализацию ушло ≈40часов</p>
+            </div>
+            <a class="work-pdf-btn" href="#" target="_blank" rel="noopener" title="Разбор кейса">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M3 9h12M9 3l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 4 -->
+      <article class="work-card">
+        <div class="work-thumb">
+          <iframe src="https://kinescope.io/ba5XcHENcAh7y1BMjECtpT"
+            allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+        <span class="work-type">2D · MOTION</span>
+        <div class="work-meta">
+          <div class="work-meta-inner">
+            <div class="work-meta-text">
+              <h3>SHOWREEL 2д моушн-дизайна</h3>
+              <p>Демонстрация моих навыков работы в сфере 2д моушн графики.</p>
+            </div>
+            <a class="work-pdf-btn" href="#" target="_blank" rel="noopener" title="Разбор кейса">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M3 9h12M9 3l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /works-grid -->
+
+    <!--
+      КНОПКА "СМОТРЕТЬ КЕЙСЫ":
+      Замени # на ссылку из Google Drive:
+      1. Google Drive → правой кнопкой на PDF → Поделиться
+      2. Доступ: "Все, у кого есть ссылка" → Копировать ссылку
+      3. Вставь ссылку вместо # ниже
+    -->
+    <div class="cases-btn-wrap">
+      <a class="cases-btn" href="#" target="_blank" rel="noopener">
+        Смотреть кейсы
+        <span class="cases-btn-arrow">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+
+  </section>
+
+  <!-- ─── FOOTER / CONTACT ─── -->
+  <footer id="contact">
+    <p class="contact-big reveal">
+      ОТКРЫТ ДЛЯ<br><em>НОВЫХ ПРОЕКТОВ</em>
+    </p>
+
+    <div class="contact-row reveal">
+      <a class="btn accent" id="emailBtn" href="mailto:danila.pollyakoff@gmail.com" data-email="danila.pollyakoff@gmail.com" data-label="danila.pollyakoff@gmail.com">
+        <span id="emailBtnText">danila.pollyakoff@gmail.com</span>
+      </a>
+      <div class="contact-links">
+        <!--
+          Replace # below with your actual Instagram and Behance URLs:
+          Instagram: hhttps://www.instagram.com/duppi.xd/
+          Behance:   https://www.behance.net/YOUR_HANDLE
+        -->
+        <a class="btn" href="https://www.instagram.com/duppi.xd/" target="_blank" rel="noopener">Instagram ↗</a>
+        <!--
+          Telegram: замени # на свой username, например:
+          https://t.me/duppi_xd
+        -->
+        <a class="btn btn-tg" href="https://t.me/duppi_xd" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/>
+          </svg>
+          Telegram
+        </a>
+      </div>
+    </div>
+
+ 
+
+  <!-- ─── JPEG SEQUENCE PLAYER ─── -->
+  <script>
+  (function () {
+    /* ══ НАСТРОЙКИ — МЕНЯЙ ТОЛЬКО ЭТИ ПЕРЕМЕННЫЕ ══ */
+    const SEQ_FOLDER = 'sequence';   // папка с кадрами (рядом с index.html)
+    const SEQ_PREFIX = 'frame_';     // префикс имени: frame_001.jpg
+    const SEQ_DIGITS = 5;            // кол-во цифр: 3 → 001
+    const SEQ_EXT    = 'jpg';        // расширение файла
+    const SEQ_TOTAL  = 375;           // сколько кадров (измени под свою секвенцию)
+    const SEQ_FPS    = 25;           // скорость воспроизведения
+    /* ═══════════════════════════════════════════════ */
+
+    const canvas  = document.getElementById('heroCanvas');
+    const ctx     = canvas.getContext('2d');
+    const loaderBar = document.getElementById('seqLoaderBar');
+    const wrap    = document.getElementById('heroCanvasWrap');
+
+    // Подстраиваем canvas под реальные пиксели экрана
+    function resize() {
+      canvas.width  = wrap.offsetWidth  * (window.devicePixelRatio || 1);
+      canvas.height = wrap.offsetHeight * (window.devicePixelRatio || 1);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Строим путь к кадру по номеру
+    function framePath(n) {
+      const num = String(n).padStart(SEQ_DIGITS, '0');
+      return `${SEQ_FOLDER}/${SEQ_PREFIX}${num}.${SEQ_EXT}`;
+    }
+
+    // Загружаем все кадры
+    const frames = [];
+    let loaded = 0;
+
+    function loadAll() {
+      for (let i = 1; i <= SEQ_TOTAL; i++) {
+        const img = new Image();
+        img.onload = () => {
+          loaded++;
+          loaderBar.style.width = (loaded / SEQ_TOTAL * 100) + '%';
+          if (loaded === SEQ_TOTAL) {
+            loaderBar.style.opacity = '0';
+            play();
+          }
+        };
+        img.onerror = () => {
+          // Кадр не найден — пропускаем, не ломаем луп
+          loaded++;
+          if (loaded === SEQ_TOTAL) play();
+        };
+        img.src = framePath(i);
+        frames[i - 1] = img;
+      }
+    }
+
+    // Рисуем кадр на canvas с cover-fit
+    function drawFrame(img) {
+      if (!img || !img.naturalWidth) return;
+      const cw = canvas.width, ch = canvas.height;
+      const iw = img.naturalWidth, ih = img.naturalHeight;
+      const scale = Math.max(cw / iw, ch / ih);
+      const sw = iw * scale, sh = ih * scale;
+      const ox = (cw - sw) / 2, oy = (ch - sh) / 2;
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(img, ox, oy, sw, sh);
+    }
+
+    // Луп
+    let currentFrame = 0;
+    let lastTime = 0;
+    const interval = 1000 / SEQ_FPS;
+
+    function play() {
+      function tick(ts) {
+        if (ts - lastTime >= interval) {
+          drawFrame(frames[currentFrame]);
+          currentFrame = (currentFrame + 1) % SEQ_TOTAL;
+          lastTime = ts;
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // Пауза когда вкладка не видна — экономим CPU
+    document.addEventListener('visibilitychange', () => {
+      lastTime = performance.now(); // сбрасываем таймер при возврате
+    });
+
+    loadAll();
+  })();
+  </script>
+
+  <!-- ─── КОПИРОВАНИЕ ПОЧТЫ ПО КЛИКУ ─── -->
+  <script>
+    (function () {
+      const emailBtn  = document.getElementById('emailBtn');
+      const emailText = document.getElementById('emailBtnText');
+      if (!emailBtn || !emailText) return;
+
+      const email   = emailBtn.dataset.email;
+      const label   = emailBtn.dataset.label;
+      let resetTimer = null;
+
+      emailBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const showCopied = () => {
+          emailText.textContent = 'Скопировано ✓';
+          clearTimeout(resetTimer);
+          resetTimer = setTimeout(() => {
+            emailText.textContent = label;
+          }, 1800);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(email).then(showCopied).catch(() => {
+            window.location.href = 'mailto:' + email;
+          });
+        } else {
+          // Фолбэк для старых браузеров
+          const tmp = document.createElement('textarea');
+          tmp.value = email;
+          tmp.style.position = 'fixed';
+          tmp.style.opacity = '0';
+          document.body.appendChild(tmp);
+          tmp.select();
+          try {
+            document.execCommand('copy');
+            showCopied();
+          } catch (err) {
+            window.location.href = 'mailto:' + email;
+          }
+          document.body.removeChild(tmp);
+        }
+      });
+    })();
+  </script>
+
+  <!-- ─── SCROLL REVEAL ─── -->
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
